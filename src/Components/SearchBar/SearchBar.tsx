@@ -1,18 +1,4 @@
-import {
-  Autocomplete,
-  Box,
-  Button,
-  ButtonBase,
-  FormControl,
-  InputAdornment,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import MultiArrowIcon from "../../assets/Icons/MultiArrowIcon";
-import WhereFromIcon from "../../assets/Icons/WhereFromIcon";
-import LocationIcon from "../../assets/Icons/LocationIcon";
-import { useState } from "react";
+import { Box, Button, FormControl } from "@mui/material";
 import TripTypeSelect from "./Fields/TripTypeSelect";
 import PassengerNumber from "./Fields/PassengerNumber";
 import ClassTypeSelect from "./Fields/ClassTypeSelect";
@@ -83,8 +69,8 @@ export default function SearchBar() {
               justifyContent: "center",
               position: "absolute",
               right: "50%",
-              bottom: "-30px", // Adjust to control how much is outside
-              transform: "translateX(50%)", // Instead of (-50%) to fix zoom shifting
+              bottom: "-30px",
+              transform: "translateX(50%)",
             }}>
             <Button
               sx={{
