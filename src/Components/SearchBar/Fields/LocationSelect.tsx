@@ -11,7 +11,13 @@ import MultiArrowIcon from "../../../assets/Icons/MultiArrowIcon";
 import WhereFromIcon from "../../../assets/Icons/WhereFromIcon";
 
 export default function LocationSelect() {
-  const [whereFromValue, setWhereFromValue] = useState();
+  const [whereFromValue, setWhereFromValue] = useState<string | null>("");
+  const [whereToValue, setWhereToValue] = useState<string | null>("");
+
+  const swapValues = () => {
+    setWhereFromValue(whereToValue);
+    setWhereToValue(whereFromValue);
+  };
   return (
     <>
       {/* where from */}
@@ -19,7 +25,6 @@ export default function LocationSelect() {
         sx={{
           width: "100%",
           position: "relative",
-          overflow: "hidden",
           "&:hover .absoluteBox ": {
             border: "1px solid #000",
           },
@@ -38,6 +43,7 @@ export default function LocationSelect() {
             "& .MuiAutocomplete-endAdornment": {
               visibility: "hidden",
             },
+            zIndex: "5",
           }}
           renderInput={(params) => (
             <TextField
@@ -45,8 +51,12 @@ export default function LocationSelect() {
                 "& .MuiInputBase-root": {
                   padding: "14px 8px 14px 8px",
                 },
+                "& button": {
+                  display: "none",
+                },
                 display: "flex",
                 alignItems: "center",
+                zIndex: "-1",
               }}
               {...params}
               placeholder="Where from?"
@@ -62,22 +72,32 @@ export default function LocationSelect() {
           )}
         />
         <Box
-          className="absoluteBox"
           sx={{
-            width: "35px",
-            height: "35px",
+            height: "100%",
+            width: "100%",
+            zIndex: "-1",
+            overflow: "hidden",
             position: "absolute",
-            background: "white",
-            borderRadius: "100%",
-            right: "0",
-            transform: "translateX(55%)",
-            border: "1px solid #C4C4C4",
-            top: "23%",
-            zIndex: "2",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}></Box>
+            top: "0",
+          }}>
+          <Box
+            className="absoluteBox"
+            sx={{
+              width: "35px",
+              height: "35px",
+              position: "absolute",
+              borderRadius: "100%",
+              right: "0",
+              transform: "translateX(55%)",
+              border: "1px solid #C4C4C4",
+              top: "23%",
+              zIndex: "3",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "white",
+            }}></Box>
+        </Box>
       </Box>
       {/* swap icon */}
       <Box
@@ -89,7 +109,7 @@ export default function LocationSelect() {
           top: "36%",
           zIndex: "3",
         }}>
-        <ButtonBase>
+        <ButtonBase onClick={swapValues}>
           <MultiArrowIcon />
         </ButtonBase>
       </Box>
@@ -98,8 +118,8 @@ export default function LocationSelect() {
         sx={{
           width: "100%",
           position: "relative",
-          overflow: "hidden",
-          "&:hover .absoluteBox ": {
+
+          "&:hover .absoluteBox": {
             border: "1px solid #000",
           },
           "&:focus-within .absoluteBox": {
@@ -108,30 +128,45 @@ export default function LocationSelect() {
         }}>
         {" "}
         <Box
-          className="absoluteBox"
           sx={{
-            width: "35px",
-            height: "35px",
+            height: "100%",
+            width: "100%",
+            zIndex: "-1",
+            overflow: "hidden",
             position: "absolute",
-            background: "white",
-            borderRadius: "100%",
-            left: "0",
-            transform: "translateX(-55%)",
-            border: "1px solid #C4C4C4",
-            top: "23%",
-            zIndex: "2",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}></Box>
+
+            top: "0",
+          }}>
+          <Box
+            className="absoluteBox"
+            sx={{
+              width: "35px",
+              height: "35px",
+              position: "absolute",
+
+              background: "white",
+              borderRadius: "100%",
+              left: "0",
+              transform: "translateX(-55%)",
+              border: "1px solid #C4C4C4",
+              top: "23%",
+              zIndex: "0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}></Box>
+        </Box>
         <Autocomplete
           disablePortal
+          value={whereToValue}
           options={["test1", "test2", "test3"]}
+          onChange={(e, value) => setWhereToValue(value)}
           sx={{
             width: "100%",
             "& .MuiAutocomplete-endAdornment": {
               visibility: "hidden",
             },
+            zIndex: "5",
           }}
           renderInput={(params) => (
             <TextField
@@ -139,6 +174,11 @@ export default function LocationSelect() {
                 "& .MuiInputBase-root": {
                   padding: "14px 8px 14px 8px",
                 },
+
+                "& button": {
+                  display: "none",
+                },
+                zIndex: "-2",
                 display: "flex",
                 alignItems: "center",
               }}
