@@ -4,20 +4,59 @@ import {
   TextField,
   InputAdornment,
   ButtonBase,
+  ListItem,
 } from "@mui/material";
 import React, { useState } from "react";
 import LocationIcon from "../../../assets/Icons/LocationIcon";
 import MultiArrowIcon from "../../../assets/Icons/MultiArrowIcon";
 import WhereFromIcon from "../../../assets/Icons/WhereFromIcon";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { API_KEY } from "../../../contants/ApiKey";
+import { useDebounce } from "../../../Hooks/useDebounce";
+import AirIcon from "../../../assets/Icons/AirIcon";
 
 export default function LocationSelect() {
   const [whereFromValue, setWhereFromValue] = useState<string | null>("");
   const [whereToValue, setWhereToValue] = useState<string | null>("");
-
+  const debouncedFromValue = useDebounce(whereFromValue, 500);
+  const debouncedToValue = useDebounce(whereToValue, 500);
+  console.log(whereFromValue);
+  const getAirports = async (query: string) => {
+    const { data } = await axios.get(
+      "https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport",
+      {
+        params: { query },
+        headers: API_KEY,
+      }
+    );
+    return data.data;
+  };
+  const { data: fromAirports } = useQuery({
+    queryKey: ["Airport-data", whereFromValue],
+    queryFn: () => getAirports(debouncedFromValue),
+    enabled: !!debouncedFromValue,
+  });
+  const { data: toAirports } = useQuery({
+    queryKey: ["Airport-data", whereFromValue],
+    queryFn: () => getAirports(debouncedToValue),
+    enabled: !!debouncedToValue,
+  });
   const swapValues = () => {
     setWhereFromValue(whereToValue);
     setWhereToValue(whereFromValue);
   };
+  console.log(debouncedFromValue);
+  const fromAirportsoptions = fromAirports?.map((airport) => ({
+    label: `${airport.presentation.title} Airport - ${airport.navigation.relevantHotelParams.localizedName}, ${airport.presentation.subtitle}`,
+    skyId: airport.skyId,
+    entityId: airport.entityId,
+  }));
+  const toAirportsoptions = toAirports?.map((airport) => ({
+    label: `${airport.presentation.title} Airport - ${airport.navigation.relevantHotelParams.localizedName}, ${airport.presentation.subtitle}`,
+    skyId: airport.skyId,
+    entityId: airport.entityId,
+  }));
   return (
     <>
       {/* where from */}
@@ -36,8 +75,8 @@ export default function LocationSelect() {
         <Autocomplete
           disablePortal
           value={whereFromValue}
-          options={["test1", "test2", "test3"]}
-          onChange={(e, value) => setWhereFromValue(value)}
+          onChange={(e, newValue) => setWhereFromValue(newValue)}
+          options={fromAirportsoptions || []}
           sx={{
             width: "100%",
             "& .MuiAutocomplete-endAdornment": {
@@ -60,6 +99,7 @@ export default function LocationSelect() {
               }}
               {...params}
               placeholder="Where from?"
+              onChange={(e) => setWhereFromValue(e.target.value)}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (
@@ -69,6 +109,15 @@ export default function LocationSelect() {
                 ),
               }}
             />
+          )}
+          renderOption={(props, option) => (
+            <ListItem {...props} sx={{ display: "flex", alignItems: "center" }}>
+              <Box sx={{ width: "25%" }}>
+                <AirIcon sx={{ marginRight: "8px" }} />
+              </Box>
+
+              {option.label}
+            </ListItem>
           )}
         />
         <Box
@@ -159,8 +208,8 @@ export default function LocationSelect() {
         <Autocomplete
           disablePortal
           value={whereToValue}
-          options={["test1", "test2", "test3"]}
-          onChange={(e, value) => setWhereToValue(value)}
+          onChange={(e, newValue) => setWhereToValue(newValue)}
+          options={toAirportsoptions || []}
           sx={{
             width: "100%",
             "& .MuiAutocomplete-endAdornment": {
@@ -170,6 +219,7 @@ export default function LocationSelect() {
           }}
           renderInput={(params) => (
             <TextField
+              onChange={(e) => setWhereToValue(e.target.value)}
               sx={{
                 "& .MuiInputBase-root": {
                   padding: "14px 8px 14px 8px",
@@ -193,6 +243,15 @@ export default function LocationSelect() {
                 ),
               }}
             />
+          )}
+          renderOption={(props, option) => (
+            <ListItem {...props} sx={{ display: "flex", alignItems: "center" }}>
+              <Box sx={{ width: "25%" }}>
+                <AirIcon sx={{ marginRight: "8px" }} />
+              </Box>
+
+              {option.label}
+            </ListItem>
           )}
         />
       </Box>
