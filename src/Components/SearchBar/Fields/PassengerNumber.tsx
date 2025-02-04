@@ -1,29 +1,20 @@
 import React, { useState } from "react";
-import { SearchBarFieldProps } from "../../../Types/SearchBarFieldProps";
 import { Box, Typography, IconButton, Popover, Button } from "@mui/material";
 import PassengerIcon from "../../../assets/Icons/PassengerIcon";
 import DropDownIcon from "../../../assets/Icons/DropDownIcon";
+import { SearchParams, useSearch } from "../../../Context/SearchContext";
 
-export default function PassengerNumber({
-  value,
-  onChange,
-}: SearchBarFieldProps) {
+export default function PassengerNumber() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [passengers, setPassengers] = useState({
-    adults: 1,
-    children: 0,
-    infantsSeat: 0,
-    infantsLap: 0,
-  });
+  const { searchParams, setSearchParams } = useSearch();
 
   const [borderAnimating, setBorderAnimating] = useState(false);
 
   // Calculate total passengers
   const totalPassengers =
-    passengers.adults +
-    passengers.children +
-    passengers.infantsSeat +
-    passengers.infantsLap;
+    (searchParams.adults || 0) +
+    (searchParams.children || 0) +
+    (searchParams.infants || 0);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,19 +28,31 @@ export default function PassengerNumber({
     setAnchorEl(null);
   };
 
-  const handleChange = (type: keyof typeof passengers, increment: boolean) => {
-    setPassengers((prev) => {
-      const currentValue = prev[type];
+  const handleChange = (
+    type: keyof typeof searchParams,
+    increment: boolean
+  ) => {
+    const currentValue = searchParams[type];
 
-      if (type === "adults" && !increment && currentValue <= 1) {
-        return prev;
-      }
+    if (currentValue === undefined) {
+      return; // No action if value is undefined
+    }
 
-      return {
-        ...prev,
-        [type]: Math.max(0, currentValue + (increment ? 1 : -1)),
-      };
+    if (type === "adults" && !increment && Number(currentValue) <= 1) {
+      return; // Prevent reducing adults below 1
+    }
+
+    setSearchParams({
+      ...searchParams,
+      [type]: Math.max(0, Number(currentValue) + (increment ? 1 : -1)),
     });
+  };
+
+  // Helper function for determining background and color
+  const getButtonStyles = (value: number, isDisabled: boolean) => {
+    const backgroundColor = isDisabled ? "#E7E8E8" : "#E0EBFD";
+    const color = isDisabled ? "#B0B0B0" : "#0160F0";
+    return { background: backgroundColor, color: color };
   };
 
   return (
@@ -61,7 +64,6 @@ export default function PassengerNumber({
           alignItems: "center",
           gap: 1,
           padding: "8px 12px",
-
           position: "relative",
           cursor: "pointer",
           "&:before": {
@@ -81,11 +83,7 @@ export default function PassengerNumber({
         }}>
         <PassengerIcon />
         <Typography>{totalPassengers}</Typography>
-        <Box
-          sx={{
-            width: "10px",
-            marginBottom: "3px",
-          }}>
+        <Box sx={{ width: "10px", marginBottom: "3px" }}>
           <DropDownIcon />
         </Box>
       </Box>
@@ -103,73 +101,66 @@ export default function PassengerNumber({
           {[
             { label: "Adults", key: "adults" },
             { label: "Children (Aged 2-11)", key: "children" },
-            { label: "Infants (In seat)", key: "infantsSeat" },
-            { label: "Infants (On lap)", key: "infantsLap" },
-          ].map(({ label, key }) => (
-            <Box
-              key={key}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+            { label: "Infants", key: "infants" },
+          ].map(({ label, key }) => {
+            const currentValue = searchParams[key as keyof typeof searchParams];
+            const isDisabledMinus =
+              currentValue === 0 ||
+              (key === "adults" && Number(currentValue) <= 1);
+            const isDisabledPlus =
+              currentValue === undefined || Number(currentValue) < 0;
 
-                mb: 1,
-              }}>
-              <Typography>{label}</Typography>
-              <Box>
-                <IconButton
-                  sx={{
-                    background:
-                      passengers[key as keyof typeof passengers] === 0 ||
-                      (key === "adults" &&
-                        passengers[key as keyof typeof passengers] <= 1)
-                        ? "#E7E8E8"
-                        : "#E0EBFD",
-                    color:
-                      passengers[key as keyof typeof passengers] === 0 ||
-                      (key === "adults" &&
-                        passengers[key as keyof typeof passengers] <= 1)
-                        ? "#B0B0B0"
-                        : "#0160F0",
-                    width: "35px",
-                    height: "35px",
-                    borderRadius: "0px",
-                  }}
-                  onClick={() =>
-                    handleChange(key as keyof typeof passengers, false)
-                  }
-                  disabled={
-                    passengers[key as keyof typeof passengers] === 0 ||
-                    (key === "adults" &&
-                      passengers[key as keyof typeof passengers] <= 1)
-                  }>
-                  -
-                </IconButton>
-                <Typography component="span" sx={{ mx: 1 }}>
-                  {passengers[key as keyof typeof passengers]}
-                </Typography>
-                <IconButton
-                  sx={{
-                    background:
-                      passengers[key as keyof typeof passengers] >= 0
-                        ? "#E0EBFD"
-                        : "#E7E8E8",
-                    color:
-                      passengers[key as keyof typeof passengers] >= 0
-                        ? "#0160F0"
-                        : "#5f6368",
-                    width: "35px",
-                    height: "35px",
-                    borderRadius: "0px",
-                  }}
-                  onClick={() =>
-                    handleChange(key as keyof typeof passengers, true)
-                  }>
-                  +
-                </IconButton>
+            return (
+              <Box
+                key={key}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 1,
+                }}>
+                <Typography>{label}</Typography>
+                <Box>
+                  <IconButton
+                    sx={{
+                      ...getButtonStyles(
+                        Number(currentValue) || 0,
+                        isDisabledMinus
+                      ),
+                      width: "35px",
+                      height: "35px",
+                      borderRadius: "0px",
+                    }}
+                    onClick={() =>
+                      handleChange(key as keyof typeof searchParams, false)
+                    }
+                    disabled={isDisabledMinus}>
+                    -
+                  </IconButton>
+                  <Typography component="span" sx={{ mx: 1 }}>
+                    {currentValue}
+                  </Typography>
+                  <IconButton
+                    sx={{
+                      ...getButtonStyles(
+                        Number(currentValue) || 0,
+                        isDisabledPlus
+                      ),
+                      width: "35px",
+                      height: "35px",
+                      borderRadius: "0px",
+                    }}
+                    onClick={() =>
+                      handleChange(key as keyof typeof searchParams, true)
+                    }
+                    disabled={isDisabledPlus}>
+                    +
+                  </IconButton>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            );
+          })}
+
           <Button
             fullWidth
             variant="contained"

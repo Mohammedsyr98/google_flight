@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import { SearchBarFieldProps } from "../../../Types/SearchBarFieldProps";
 import { Select, InputAdornment, MenuItem, Box } from "@mui/material";
 import MultiArrowIcon from "../../../assets/Icons/MultiArrowIcon";
 import OneWayIcon from "../../../assets/Icons/OneWayIcon";
@@ -7,19 +5,13 @@ import MultiCityIcon from "../../../assets/Icons/MultiCityIcon";
 import TrueIcon from "../../../assets/Icons/TrueIcon";
 import { TripType } from "../../../Types/TripType";
 
-export default function TripTypeSelect({
-  value,
-  onChange,
-}: SearchBarFieldProps) {
-  const [tripType, setTripType] = useState<TripType>("Round Trip");
+import { useState } from "react";
 
+export default function TripTypeSelect() {
+  const [tripType, setTripType] = useState<TripType>("Round Trip");
   const handleChange = (event: any) => {
     const selectedValue: TripType = event.target.value;
     setTripType(selectedValue);
-    console.log(selectedValue);
-    if (onChange) {
-      onChange(selectedValue);
-    }
   };
 
   const handleIconType = () => {
@@ -40,18 +32,18 @@ export default function TripTypeSelect({
       variant="standard"
       id="trip-type-select"
       onChange={handleChange}
-      defaultValue={tripType}
+      value={tripType}
       sx={{
         "&:before": { display: "none" },
         "&:hover:before": { display: "none" },
         "&.Mui-focused:before": { display: "none" },
         ".css-f7bkku": { display: "none" },
         "&.Mui-focused": {
-          borderBottom: "none !important", // Remove the focus border
-          boxShadow: "none", // Ensure no shadow effect
+          borderBottom: "none !important",
+          boxShadow: "none",
         },
         "&:hover": {
-          borderBottom: "none", // Remove hover border effect
+          borderBottom: "none",
         },
       }}
       startAdornment={

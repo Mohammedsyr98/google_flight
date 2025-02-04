@@ -1,21 +1,14 @@
-import React, { useState } from "react";
-import { SearchBarFieldProps } from "../../../Types/SearchBarFieldProps";
 import { Box, MenuItem, Select } from "@mui/material";
 import { ClassType } from "../../../Types/ClassType";
 import TrueIcon from "../../../assets/Icons/TrueIcon";
+import { useSearch } from "../../../Context/SearchContext";
 
-export default function ClassTypeSelect({
-  value,
-  onChange,
-}: SearchBarFieldProps) {
-  const [classType, setClassType] = useState<ClassType>("Economy");
+export default function ClassTypeSelect() {
+  const { searchParams, setSearchParams } = useSearch();
 
   const handleChange = (event: any) => {
     const selectedValue: ClassType = event.target.value;
-    setClassType(selectedValue);
-    if (onChange) {
-      onChange(selectedValue);
-    }
+    setSearchParams({ ...searchParams, cabinClass: selectedValue });
   };
   return (
     <Select
@@ -34,7 +27,7 @@ export default function ClassTypeSelect({
         <MenuItem key={option} value={option}>
           <Box display="flex" alignItems="center" gap={1.5} width="100%">
             <Box width="24px" display="flex" justifyContent="center">
-              {classType === option && <TrueIcon />}
+              {searchParams.cabinClass === option && <TrueIcon />}
             </Box>
             <Box flexGrow={1}>{option}</Box>
           </Box>

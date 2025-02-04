@@ -5,8 +5,10 @@ import ClassTypeSelect from "./Fields/ClassTypeSelect";
 import LocationSelect from "./Fields/LocationSelect";
 import DataPickerField from "./Fields/DataPicker";
 import ExploreIcon from "../../assets/Icons/ExploreIcon";
+import { useSearch } from "../../Context/SearchContext";
 
 export default function SearchBar() {
+  const { fetchResults } = useSearch();
   return (
     <>
       <Box
@@ -35,58 +37,55 @@ export default function SearchBar() {
           <PassengerNumber />
           <ClassTypeSelect />
         </Box>
-
-        {/* input fields */}
-
-        <FormControl fullWidth>
+        input fields
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "30px",
+            padding: "0 10px 10px",
+            flexDirection: { xs: "column", md: "row" },
+            gap: "16px",
+          }}>
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
-              marginBottom: "30px",
-              padding: "0 10px 10px",
-              flexDirection: { xs: "column", md: "row" },
-              gap: "16px",
+              flexDirection: "row",
+              flexBasis: { xs: "50%", lg: "100%" },
+              gap: "8px",
+              position: "relative",
+              width: "100%",
             }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                flexBasis: { xs: "50%", lg: "100%" },
-                gap: "8px",
-                position: "relative",
-                width: "100%",
-              }}>
-              <LocationSelect />
-            </Box>
-            <Box sx={{ flexBasis: { xs: "50%", lg: "100%" } }}>
-              <DataPickerField />
-            </Box>
+            <LocationSelect />
           </Box>
-          <Box
+          <Box sx={{ flexBasis: { xs: "50%", lg: "100%" } }}>
+            <DataPickerField />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            position: "absolute",
+            right: "50%",
+            bottom: "-30px",
+            transform: "translateX(50%)",
+          }}>
+          <Button
+            onClick={fetchResults}
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              position: "absolute",
-              right: "50%",
-              bottom: "-30px",
-              transform: "translateX(50%)",
+              background: "#1A73E8",
+              borderRadius: "24px",
+              height: "40px",
+              fontWeight: "600",
+              fontSize: ".720rem",
+              width: "max-content",
+              color: "white",
             }}>
-            <Button
-              sx={{
-                background: "#1A73E8",
-                borderRadius: "24px",
-                height: "40px",
-                fontWeight: "600",
-                fontSize: ".720rem",
-                width: "max-content",
-                color: "white",
-              }}>
-              <ExploreIcon />
-              Explore
-            </Button>
-          </Box>
-        </FormControl>
+            <ExploreIcon />
+            Explore
+          </Button>
+        </Box>
       </Box>
       <Box sx={{ marginTop: "50px" }}></Box>
     </>
