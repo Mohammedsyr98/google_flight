@@ -6,15 +6,16 @@ import {
   ButtonBase,
   ListItem,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LocationIcon from "../../../assets/Icons/LocationIcon";
 import MultiArrowIcon from "../../../assets/Icons/MultiArrowIcon";
 import WhereFromIcon from "../../../assets/Icons/WhereFromIcon";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { API_KEY } from "../../../contants/ApiKey";
+import { API_KEY } from "../../../constants/ApiKey";
 import { useDebounce } from "../../../Hooks/useDebounce";
 import AirIcon from "../../../assets/Icons/AirIcon";
+import { useSearch } from "../../../Context/SearchContext";
 
 export default function LocationSelect() {
   const [whereFromValue, setWhereFromValue] = useState<string | null>("");
@@ -42,6 +43,21 @@ export default function LocationSelect() {
     queryFn: () => getAirports(debouncedToValue),
     enabled: !!debouncedToValue,
   });
+  const { searchParams, setSearchParams } = useSearch();
+
+  useEffect(() => {
+    if (debouncedFromValue && debouncedToValue) {
+      setSearchParams({
+        ...searchParams,
+        originSkyId: debouncedFromValue.skyId,
+        destinationSkyId: debouncedToValue.skyId,
+        originEntityId: debouncedFromValue.entityId,
+        destinationEntityId: debouncedToValue.entityId,
+      });
+    }
+
+    console.log(fromAirports);
+  }, [debouncedFromValue, debouncedToValue]);
   const swapValues = () => {
     setWhereFromValue(whereToValue);
     setWhereToValue(whereFromValue);
@@ -52,6 +68,7 @@ export default function LocationSelect() {
     skyId: airport.skyId,
     entityId: airport.entityId,
   }));
+
   const toAirportsoptions = toAirports?.map((airport) => ({
     label: `${airport.presentation.title} Airport - ${airport.navigation.relevantHotelParams.localizedName}, ${airport.presentation.subtitle}`,
     skyId: airport.skyId,

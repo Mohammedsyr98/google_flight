@@ -21,10 +21,12 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import React, { useRef, useState } from "react";
-import WhereFromIcon from "../../../assets/Icons/WhereFromIcon";
+import React, { useEffect, useState } from "react";
+
+import { useSearch } from "../../../Context/SearchContext";
 
 export default function DataPickerField() {
+  const { searchParams, setSearchParams } = useSearch();
   const [dates, setDates] = useState<{
     departure: Dayjs | null;
     return: Dayjs | null;
@@ -70,6 +72,13 @@ export default function DataPickerField() {
       }
     }
   };
+  useEffect(() => {
+    setSearchParams({
+      ...searchParams,
+      date: dates.departure?.format("YYYY-MM-DD"),
+      returnDate: dates.return?.format("YYYY-MM-DD") || "",
+    });
+  }, [dates, setSearchParams]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
