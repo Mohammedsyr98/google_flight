@@ -13,17 +13,11 @@ export default function SearchBar() {
     <>
       <Box
         marginTop={10}
-        sx={{ padding: "10px", position: "relative" }}
+        sx={{ padding: "10px", position: "relative", width: "100%" }}
         boxShadow={
           "0 1px 3px 0 rgba(60,64,67,.3),0 4px 8px 3px rgba(60,64,67,.15)"
         }
-        borderRadius={8}
-        width={{
-          xs: "100%",
-          sm: "100%",
-          md: "80%",
-          lg: "82%",
-        }}>
+        borderRadius={5}>
         {/* select fields */}
         <Box
           sx={{
@@ -37,7 +31,7 @@ export default function SearchBar() {
           <PassengerNumber />
           <ClassTypeSelect />
         </Box>
-        input fields
+
         <Box
           sx={{
             display: "flex",
@@ -51,14 +45,14 @@ export default function SearchBar() {
             sx={{
               display: "flex",
               flexDirection: "row",
-              flexBasis: { xs: "50%", lg: "100%" },
+              flexBasis: { xs: "100%", lg: "53%" },
               gap: "8px",
               position: "relative",
               width: "100%",
             }}>
             <LocationSelect />
           </Box>
-          <Box sx={{ flexBasis: { xs: "50%", lg: "100%" } }}>
+          <Box sx={{ flexBasis: { xs: "100%", lg: "47%" } }}>
             <DataPickerField />
           </Box>
         </Box>
@@ -68,7 +62,7 @@ export default function SearchBar() {
             justifyContent: "center",
             position: "absolute",
             right: "50%",
-            bottom: "-30px",
+            bottom: "-20px",
             transform: "translateX(50%)",
           }}>
           <Button
@@ -87,7 +81,6 @@ export default function SearchBar() {
           </Button>
         </Box>
       </Box>
-      <Box sx={{ marginTop: "50px" }}></Box>
     </>
   );
 }
