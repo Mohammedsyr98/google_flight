@@ -1,10 +1,5 @@
 import {
   TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Box,
   Paper,
   Typography,
@@ -13,7 +8,6 @@ import {
 } from "@mui/material";
 import {
   LocalizationProvider,
-  DatePicker,
   DateCalendar,
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -87,11 +81,11 @@ export default function DataPickerField() {
         <Box display="flex" alignItems="center">
           <TextField
             placeholder="Departure"
-            value={dates.departure ? dates.departure.format("YYYY-MM-DD") : ""}
+            value={dates.departure ? dates.departure.format("ddd,MMM D") : ""}
             variant="outlined"
             sx={{
               "& .MuiInputBase-root": {
-                padding: "5px 8px 5px 8px",
+                padding: "1.2px 8px 1.2px 8px",
               },
               "& .css-1e3qgpi-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
                 {
@@ -112,7 +106,7 @@ export default function DataPickerField() {
             margin="normal"
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
+                <InputAdornment position="end" sx={{ width: "35%" }}>
                   <IconButton
                     onClick={() => adjustDate("departure", "prev")}
                     disabled={!dates.return}>
@@ -143,7 +137,7 @@ export default function DataPickerField() {
         <Box display="flex" alignItems="center">
           <TextField
             placeholder="Return Date"
-            value={dates.return ? dates.return.format("YYYY-MM-DD") : ""}
+            value={dates.return ? dates.return.format("ddd, MMM D") : ""}
             variant="outlined"
             sx={{
               "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
@@ -153,7 +147,7 @@ export default function DataPickerField() {
                   borderBottomLeftRadius: "3px",
                 },
               "& .MuiInputBase-root": {
-                padding: "5px 8px 5px 8px",
+                padding: "1.2px 8px 1.2px 8px",
                 outline: "none",
                 position: "relative",
               },
@@ -186,7 +180,7 @@ export default function DataPickerField() {
             fullWidth
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
+                <InputAdornment position="end" sx={{ width: "38%" }}>
                   <IconButton
                     onClick={() => adjustDate("return", "prev")}
                     disabled={!dates.return}>

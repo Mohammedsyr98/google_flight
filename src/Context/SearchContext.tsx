@@ -9,14 +9,10 @@ export interface SearchParams {
   destinationSkyId: string;
   originEntityId: string;
   destinationEntityId: string;
-
   adults: number;
   children: number;
   infants: number;
-
   cabinClass: string;
-  fromLocation: string;
-  toLocation: string;
   date: string;
   returnDate?: string;
   limit: number;
@@ -72,7 +68,13 @@ export default function SearchProvider({ children }: { children: ReactNode }) {
   console.log(flightsDetails);
   return (
     <SearchContext.Provider
-      value={{ searchParams, setSearchParams, flightsDetails, fetchResults }}>
+      value={{
+        searchParams,
+        setSearchParams,
+        flightsDetails,
+        fetchResults,
+        isLoading,
+      }}>
       {children}
     </SearchContext.Provider>
   );

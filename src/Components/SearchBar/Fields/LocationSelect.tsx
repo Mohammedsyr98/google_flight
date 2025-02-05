@@ -20,9 +20,15 @@ import { useSearch } from "../../../Context/SearchContext";
 export default function LocationSelect() {
   const [whereFromValue, setWhereFromValue] = useState<string | null>("");
   const [whereToValue, setWhereToValue] = useState<string | null>("");
+  const [whereFromSelectedValue, setWhereFromSelectedValue] = useState<
+    any | null
+  >(null);
+  const [whereToSelectedValue, setWhereToSelectedValue] = useState<any | null>(
+    null
+  );
+  const { searchParams, setSearchParams } = useSearch();
   const debouncedFromValue = useDebounce(whereFromValue, 500);
   const debouncedToValue = useDebounce(whereToValue, 500);
-  console.log(whereFromValue);
   const getAirports = async (query: string) => {
     const { data } = await axios.get(
       "https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport",
@@ -35,41 +41,42 @@ export default function LocationSelect() {
   };
   const { data: fromAirports } = useQuery({
     queryKey: ["Airport-data", whereFromValue],
-    queryFn: () => getAirports(debouncedFromValue),
+    queryFn: () => debouncedFromValue && getAirports(debouncedFromValue),
     enabled: !!debouncedFromValue,
   });
   const { data: toAirports } = useQuery({
-    queryKey: ["Airport-data", whereFromValue],
-    queryFn: () => getAirports(debouncedToValue),
+    queryKey: ["Airport-data", whereToValue],
+    queryFn: () => debouncedToValue && getAirports(debouncedToValue),
     enabled: !!debouncedToValue,
   });
-  const { searchParams, setSearchParams } = useSearch();
 
   useEffect(() => {
-    if (debouncedFromValue && debouncedToValue) {
+    if (whereFromSelectedValue && whereFromSelectedValue) {
       setSearchParams({
         ...searchParams,
-        originSkyId: debouncedFromValue.skyId,
-        destinationSkyId: debouncedToValue.skyId,
-        originEntityId: debouncedFromValue.entityId,
-        destinationEntityId: debouncedToValue.entityId,
+        originSkyId: whereFromSelectedValue?.skyId,
+        destinationSkyId: whereToSelectedValue?.skyId,
+        originEntityId: whereFromSelectedValue?.entityId,
+        destinationEntityId: whereToSelectedValue?.entityId,
       });
     }
 
     console.log(fromAirports);
-  }, [debouncedFromValue, debouncedToValue]);
+  }, [whereFromSelectedValue, whereToSelectedValue]);
   const swapValues = () => {
     setWhereFromValue(whereToValue);
     setWhereToValue(whereFromValue);
+    setWhereFromSelectedValue(whereToSelectedValue);
+    setWhereToSelectedValue(whereFromSelectedValue);
   };
-  console.log(debouncedFromValue);
-  const fromAirportsoptions = fromAirports?.map((airport) => ({
+
+  const fromAirportsoptions = fromAirports?.map((airport: any) => ({
     label: `${airport.presentation.title} Airport - ${airport.navigation.relevantHotelParams.localizedName}, ${airport.presentation.subtitle}`,
     skyId: airport.skyId,
     entityId: airport.entityId,
   }));
 
-  const toAirportsoptions = toAirports?.map((airport) => ({
+  const toAirportsoptions = toAirports?.map((airport: any) => ({
     label: `${airport.presentation.title} Airport - ${airport.navigation.relevantHotelParams.localizedName}, ${airport.presentation.subtitle}`,
     skyId: airport.skyId,
     entityId: airport.entityId,
@@ -91,9 +98,9 @@ export default function LocationSelect() {
         {" "}
         <Autocomplete
           disablePortal
-          value={whereFromValue}
-          onChange={(e, newValue) => setWhereFromValue(newValue)}
+          value={whereFromSelectedValue}
           options={fromAirportsoptions || []}
+          onChange={(e, newValue) => setWhereFromSelectedValue(newValue)}
           sx={{
             width: "100%",
             "& .MuiAutocomplete-endAdornment": {
@@ -103,9 +110,10 @@ export default function LocationSelect() {
           }}
           renderInput={(params) => (
             <TextField
+              onChange={(e) => setWhereFromValue(e.target.value)}
               sx={{
                 "& .MuiInputBase-root": {
-                  padding: "14px 8px 14px 8px",
+                  padding: "10px 8px 10px 8px",
                 },
                 "& button": {
                   display: "none",
@@ -116,7 +124,6 @@ export default function LocationSelect() {
               }}
               {...params}
               placeholder="Where from?"
-              onChange={(e) => setWhereFromValue(e.target.value)}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (
@@ -156,7 +163,7 @@ export default function LocationSelect() {
               right: "0",
               transform: "translateX(55%)",
               border: "1px solid #C4C4C4",
-              top: "23%",
+              top: "20%",
               zIndex: "3",
               display: "flex",
               alignItems: "center",
@@ -169,10 +176,9 @@ export default function LocationSelect() {
       <Box
         sx={{
           position: "absolute",
-          // right: "48%",
           transform: "translateX(50%)",
           right: "50%",
-          top: "36%",
+          top: "33%",
           zIndex: "3",
         }}>
         <ButtonBase onClick={swapValues}>
@@ -215,7 +221,7 @@ export default function LocationSelect() {
               left: "0",
               transform: "translateX(-55%)",
               border: "1px solid #C4C4C4",
-              top: "23%",
+              top: "20%",
               zIndex: "0",
               display: "flex",
               alignItems: "center",
@@ -224,8 +230,8 @@ export default function LocationSelect() {
         </Box>
         <Autocomplete
           disablePortal
-          value={whereToValue}
-          onChange={(e, newValue) => setWhereToValue(newValue)}
+          value={whereToSelectedValue}
+          onChange={(e, newValue) => setWhereToSelectedValue(newValue)}
           options={toAirportsoptions || []}
           sx={{
             width: "100%",
@@ -239,7 +245,7 @@ export default function LocationSelect() {
               onChange={(e) => setWhereToValue(e.target.value)}
               sx={{
                 "& .MuiInputBase-root": {
-                  padding: "14px 8px 14px 8px",
+                  padding: "10px 8px 10px 8px",
                 },
 
                 "& button": {
