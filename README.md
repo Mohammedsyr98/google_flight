@@ -1,50 +1,82 @@
-# React + TypeScript + Vite
+# Google Flights Clone - React App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project replicates a Google Flights-like feature, allowing users to search for flights, view results, and filter by various criteria such as destinations, dates, and price. It is built with **React**, **Material UI**, **Axios**, **React Query**, and the **Sky-Scrapper API** for fetching flight data.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Flight Search**: Users can search for flights by entering a departure location, destination, and dates.
+- **Responsive Design**: The app is responsive and works seamlessly across various screen sizes.
+- **API Integration**: Fetch flight data using the **Sky-Scrapper API** from RapidAPI.
+- **Debounced Search**: Implements debouncing in the location input field to minimize API calls when typing.
+- **TypeScript**: The project is built with TypeScript for better type safety and development experience.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React**: For building the user interface.
+- **Material UI**: For pre-built UI components.
+- **Axios**: For making API requests.
+- **React Query**: For managing and caching API data.
+- **Sky-Scrapper API**: For flight data.
+- **TypeScript**: For type safety.
 
-- Configure the top-level `parserOptions` property like this:
+## Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+To run this project locally, follow these steps:
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Prerequisites
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+Make sure you have **Node.js** and **npm** installed on your machine.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### Installation
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/Mohammedsyr98/google_flight.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd google_flight
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Create a `.env` file in the root directory and add your RapidAPI key:
+
+   ```bash
+   REACT_APP_RAPIDAPI_KEY=your-rapidapi-key
+   ```
+
+5. Start the development server:
+
+   ```bash
+   npm start
+   ```
+
+6. Visit `http://localhost:3000` in your browser to see the app in action.
+
+## Project Structure
+
+- `components/`: Contains reusable UI components like the search bar, flight results, and sliders.
+- `pages/`: Includes main pages such as the home page.
+- `context/`: Manages API calls using Axios and React Query in context file.
+- `hooks/`: Contains custom hooks like `useDebounce` for debouncing the search input.
+- `types/`: Stores TypeScript type definitions for various parts of the app.
+
+## Loom Demo
+
+You can view the demo video of the code here: [Loom Video Link]
+
+## Contributing
+
+If you’d like to contribute to this project, feel free to fork the repository, make changes, and create a pull request.
+
+## License
+
+This project is licensed under the MIT License.
