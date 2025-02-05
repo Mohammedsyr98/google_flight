@@ -1,9 +1,12 @@
+import { ReactNode } from "react";
+
 interface Carrier {
   logoUrl: string;
   name: string;
 }
 
 interface Airport {
+  name: ReactNode;
   displayCode: string;
   city: string;
   airport: string;

@@ -14,7 +14,8 @@ import {
   CalendarIcon,
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+
 import React, { useEffect, useState } from "react";
 
 import { useSearch } from "../../../Context/SearchContext";
