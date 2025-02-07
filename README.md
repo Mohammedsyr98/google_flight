@@ -71,12 +71,9 @@ Make sure you have **Node.js** and **npm** installed on your machine.
 
 ## Loom Demo
 
-You can view the demo video of the code here: [Loom Video Link]
+You can view the demo video of the code here:https://www.loom.com/share/a9e6d64618f4426d95b2d201ae2b9a35?sid=02f98ef0-c800-45ec-8cdd-63ce8069a317
 
 ## Contributing
 
 If you’d like to contribute to this project, feel free to fork the repository, make changes, and create a pull request.
 
-## License
-
-This project is licensed under the MIT License.
